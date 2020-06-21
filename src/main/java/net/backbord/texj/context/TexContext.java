@@ -1,22 +1,23 @@
 package net.backbord.texj.context;
 
 import java.io.File;
-import java.io.InputStream;
-
 import net.backbord.texj.compiler.TexCompiler;
 
+/**
+ * Interface for TexContext. Handles all the compilation of TeX files.
+ */
 public interface TexContext {
-    public void setTexCompiler(TexCompiler compiler);
+    void setTexCompiler(TexCompiler compiler);
 
-    public TexCompiler getTexComiler();
+    TexCompiler getTexComiler();
 
-    public void setLatexmk(boolean isLatexmk);
+    void setLatexmk(boolean isLatexmk);
 
-    public File compile(File file);
+    File compile(File file);
 
-    public File compile(String texString);
+    File compile(String texString);
 
-    public byte[] compileToByteArray(File file);
+    byte[] compileToByteArray(File file);
 
-    public byte[] compileToByteArray(String texString);
+    byte[] compileToByteArray(String texString);
 }

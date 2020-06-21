@@ -1,13 +1,29 @@
 package net.backbord.texj.compiler;
 
+/**
+ * List available TeX compilers and their executables.
+ */
 public enum TexCompiler {
-    PDFLATEX("pdflatex"),
-    XELATEX("xelatex"),
+    /**
+     * pdfTeX (default).
+    */
+    PDFTEX("pdflatex"),
+    /**
+     * XeTeX compiler.
+     */
+    XETEX("xelatex"),
+    /**
+     * LuaTeX compiler.
+     */
     LUATEX("lualatex");
 
-    public final String executable;
+    private final String executable;
 
-    private TexCompiler(String executable) {
+    TexCompiler(String executable) {
         this.executable = executable;
+    }
+
+    public String getExecutable() {
+        return this.executable;
     }
 }

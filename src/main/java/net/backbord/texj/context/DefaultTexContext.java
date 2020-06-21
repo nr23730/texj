@@ -1,25 +1,24 @@
 package net.backbord.texj.context;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.BufferedReader;
-
 import net.backbord.texj.compiler.TexCompiler;
 
+/**
+ * Default way to handle TeX files.
+ */
 public class DefaultTexContext implements TexContext {
 
     private TexCompiler compiler;
-    private boolean isLatexmk = false;
+    private boolean isLatexmk;
 
     public DefaultTexContext() {
-        this.compiler = TexCompiler.PDFLATEX;
+        this.compiler = TexCompiler.PDFTEX;
     }
 
     public DefaultTexContext(TexCompiler compiler, boolean isLatexmk) {
@@ -36,8 +35,8 @@ public class DefaultTexContext implements TexContext {
     }
 
     @Override
-    public void setTexCompiler(TexCompiler compiler) {
-        this.compiler = compiler;
+    public void setTexCompiler(TexCompiler newCompiler) {
+        this.compiler = newCompiler;
     }
 
     @Override
@@ -46,8 +45,8 @@ public class DefaultTexContext implements TexContext {
     }
 
     @Override
-    public void setLatexmk(boolean isLatexmk) {
-        this.isLatexmk = isLatexmk;
+    public void setLatexmk(boolean newIsLatexmk) {
+        this.isLatexmk = newIsLatexmk;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class DefaultTexContext implements TexContext {
         try {
             Path tmp = Files.createTempDirectory("texj");
             ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(),
-                    "pdflatex " + file.getAbsolutePath());
+                    compiler.getExecutable() + " " + file.getAbsolutePath());
             builder.directory(tmp.toFile());
             Process p = builder.start();
             p.waitFor();
@@ -92,7 +91,7 @@ public class DefaultTexContext implements TexContext {
         try {
             Path tmp = Files.createTempDirectory("texj");
             ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(),
-                    "echo '" + texString + "' | pdflatex ");
+                    "echo '" + texString + "' | " + compiler.getExecutable());
             builder.directory(tmp.toFile());
             Process p = builder.start();
             p.waitFor();
