@@ -5,10 +5,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -74,11 +76,37 @@ public class TexDocument {
      *
      * @param texFile           InputStream of a TeX file.
      * @param newEscapeSequence Sequence to escape variables in your TeX code.
+     * @param charset           Charset of file.
+     * @throws IOException
+     */
+    public TexDocument(File texFile, String[] newEscapeSequence, String charset) throws IOException {
+        escapeSequence = newEscapeSequence;
+        convertFile(texFile, StandardCharsets.UTF_8.name());
+        initalize();
+    }
+
+    /**
+     * Creates a new TeX document.
+     *
+     * @param texFile           InputStream of a TeX file.
+     * @param newEscapeSequence Sequence to escape variables in your TeX code.
      * @throws IOException
      */
     public TexDocument(File texFile, String[] newEscapeSequence) throws IOException {
         escapeSequence = newEscapeSequence;
-        convertFile(texFile);
+        convertFile(texFile, StandardCharsets.UTF_8.name());
+        initalize();
+    }
+
+    /**
+     * Creates a new TeX document.
+     *
+     * @param texFile InputStream of a TeX file.
+     * @param charset Charset of file.
+     * @throws IOException
+     */
+    public TexDocument(File texFile, String charset) throws IOException {
+        convertFile(texFile, charset);
         initalize();
     }
 
@@ -89,7 +117,7 @@ public class TexDocument {
      * @throws IOException
      */
     public TexDocument(File texFile) throws IOException {
-        convertFile(texFile);
+        convertFile(texFile, StandardCharsets.UTF_8.name());
         initalize();
     }
 
@@ -105,8 +133,15 @@ public class TexDocument {
         }
     }
 
-    private void convertFile(File texFile) throws IOException {
-        texCode = Files.readString(texFile.toPath());
+    private void convertFile(File texFile, String charset) throws IOException {
+        StringBuilder contentBuilder = new StringBuilder();
+        try (Stream<String> stream = Files.lines(texFile.toPath(), Charset.forName(charset))) {
+            stream.forEach(s -> contentBuilder.append(s).append("\n"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        texCode = contentBuilder.toString();
     }
 
     private void initalize() {
