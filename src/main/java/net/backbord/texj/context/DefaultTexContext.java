@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import net.backbord.texj.compiler.TexCompiler;
+import net.backbord.texj.document.TexDocument;
 
 /**
  * Default way to handle TeX files.
@@ -47,6 +48,11 @@ public class DefaultTexContext implements TexContext {
     @Override
     public void setLatexmk(boolean newIsLatexmk) {
         this.isLatexmk = newIsLatexmk;
+    }
+
+    @Override
+    public File compile(TexDocument texDocument) {
+        return compile(texDocument.getTexCode());
     }
 
     @Override
@@ -121,6 +127,11 @@ public class DefaultTexContext implements TexContext {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public byte[] compileToByteArray(TexDocument texDocument) {
+        return compileToByteArray(texDocument.getTexCode());
     }
 
     @Override
