@@ -60,7 +60,7 @@ public class DefaultTexContext implements TexContext {
         try {
             Path tmp = Files.createTempDirectory("texj");
             ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(),
-                    compiler.getExecutable() + " " + file.getAbsolutePath());
+            compiler.getExecutable() + " " + file.getAbsolutePath());
             builder.directory(tmp.toFile());
             Process p = builder.start();
             p.waitFor();
@@ -96,33 +96,11 @@ public class DefaultTexContext implements TexContext {
     public File compile(String texString) {
         try {
             Path tmp = Files.createTempDirectory("texj");
-            ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(),
-                    "echo '" + texString + "' | " + compiler.getExecutable());
-            builder.directory(tmp.toFile());
-            Process p = builder.start();
-            p.waitFor();
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-            String s = null;
-            System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
-            }
-
-            return new File(tmp + "/texput.pdf");
+            return compile(Files.write(Path.of(tmp + "/texput.tex"), texString.getBytes()).toFile());
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
