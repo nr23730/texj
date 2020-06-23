@@ -60,7 +60,7 @@ public class DefaultTexContext implements TexContext {
         try {
             Path tmp = Files.createTempDirectory("texj");
             ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(),
-            compiler.getExecutable() + " " + file.getAbsolutePath());
+                    compiler.getExecutable() + " --interaction=batchmode " + file.getAbsolutePath());
             builder.directory(tmp.toFile());
             Process p = builder.start();
             p.waitFor();
