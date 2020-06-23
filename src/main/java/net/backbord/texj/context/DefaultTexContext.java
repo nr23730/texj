@@ -96,7 +96,7 @@ public class DefaultTexContext implements TexContext {
     public File compile(String texString) {
         try {
             Path tmp = Files.createTempDirectory("texj");
-            return compile(Files.write(Path.of(tmp + "/texput.tex"), texString.getBytes()).toFile());
+            return compile(Files.write(new File(tmp + "/texput.tex").toPath(), texString.getBytes()).toFile());
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
