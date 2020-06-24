@@ -19,6 +19,11 @@
       <email>niklas@nr205.de</email>
     </developer>
   </developers>
+  <scm>
+    <connection>scm:git:git://github.com/nr23730/texj.git</connection>
+    <developerConnection>scm:git:ssh://github.com:nr23730/texj.git</developerConnection>
+    <url>https://github.com/nr23730/texj</url>
+  </scm>
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
