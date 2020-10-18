@@ -20,6 +20,6 @@ public final class TexUtils {
         if (TexUtils.isWindowsSystem()) {
             return "powershell.exe";
         }
-        return "bash -c";
+        return "bash";
     }
 }
