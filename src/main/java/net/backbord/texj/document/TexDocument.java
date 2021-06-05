@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -20,6 +21,7 @@ public class TexDocument {
     private String texCode;
     private String[] escapeSequence = {"<texj>", "</texj>"};
     private Map<String, String> variables = new LinkedHashMap<>();
+    private Map<String, String[][]> tables = new LinkedHashMap<>();
 
     /**
      * Creates a new TeX document.
@@ -160,8 +162,50 @@ public class TexDocument {
         return variables.get(escapeSequence[0] + variable + escapeSequence[1]);
     }
 
+    public void setTable(String variable, String[][] table) {
+        tables.put(escapeSequence[0] + variable + escapeSequence[1], table);
+    }
+
+    public String[][] getTable(String variable) {
+        return tables.get(escapeSequence[0] + variable + escapeSequence[1]);
+    }
+
+    /**
+     * Converts table arrays to TeX code.
+     *
+     * @param tableCollection collection of tables as 2d arrays
+     * @return array of tables
+     */
+    public String[] convertTables(Collection<String[][]> tableCollection) {
+        String[] texTables = new String[tableCollection.size()];
+        int currentTable = 0;
+        for (String[][] table : tableCollection) {
+            texTables[currentTable] = "";
+            for (int i = 0; i < table.length; i++) {
+                for (int j = 0; j < table[i].length - 1; j++) {
+                    texTables[currentTable] += table[i][j] + " & ";
+                }
+                texTables[currentTable] += table[i][table[i].length - 1];
+                texTables[currentTable] += "\\\\ \\hline ";
+
+            }
+            currentTable++;
+        }
+        return texTables;
+    }
+
+    /**
+     * Replace variables and tables in TeX code.
+     *
+     * @return String with finalized TeX code
+     */
     public String getTexCode() {
-        return StringUtils.replaceEach(texCode, variables.keySet().toArray(new String[variables.keySet().size()]),
-                variables.values().toArray(new String[variables.values().size()]));
+        String tex = StringUtils.replaceEach(texCode, variables.keySet().toArray(new String[variables.keySet().size()]),
+                        variables.values().toArray(new String[variables.values().size()]));
+
+        tex = StringUtils.replaceEach(tex, tables.keySet().toArray(new String[tables.keySet().size()]),
+        convertTables(tables.values()));
+
+        return tex;
     }
 }
