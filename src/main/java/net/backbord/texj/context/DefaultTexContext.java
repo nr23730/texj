@@ -57,37 +57,72 @@ public class DefaultTexContext implements TexContext {
 
     @Override
     public File compile(File file) {
-        try {
-            Path tmp = Files.createTempDirectory("texj");
-            ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(), "-c",
-                    compiler.getExecutable() + " --interaction=batchmode " + file.getAbsolutePath());
-            builder.directory(tmp.toFile());
-            Process p = builder.start();
-            p.waitFor();
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        if (isLatexmk) {
+            try {
+                Path tmp = Files.createTempDirectory("texj");
+                ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(), "-c",
+                        "latexmk -pdf -quiet -" + compiler.getExecutable() + " " + file.getAbsolutePath());
+                builder.directory(tmp.toFile());
+                Process p = builder.start();
+                p.waitFor();
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 
-            String s = null;
-            System.out.println("Here is the standard output of the command:\n");
-            while ((s = stdInput.readLine()) != null) {
-                System.out.println(s);
+                String s = null;
+                System.out.println("Here is the standard output of the command:\n");
+                while ((s = stdInput.readLine()) != null) {
+                    System.out.println(s);
+                }
+
+                while ((s = stdError.readLine()) != null) {
+                    System.out.println(s);
+                }
+
+                return new File(tmp + "/texput.pdf");
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+        } else {
+            try {
+                Path tmp = Files.createTempDirectory("texj");
+                ProcessBuilder builder = new ProcessBuilder(TexUtils.getTerminalExecutable(), "-c",
+                        compiler.getExecutable() + " --interaction=batchmode " + file.getAbsolutePath());
+                builder.directory(tmp.toFile());
+                Process p = builder.start();
+                p.waitFor();
+                BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
-            while ((s = stdError.readLine()) != null) {
-                System.out.println(s);
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+                String s = null;
+                System.out.println("Here is the standard output of the command:\n");
+                while ((s = stdInput.readLine()) != null) {
+                    System.out.println(s);
+                }
+
+                while ((s = stdError.readLine()) != null) {
+                    System.out.println(s);
+                }
+
+                return new File(tmp + "/texput.pdf");
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-
-            return new File(tmp + "/texput.pdf");
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
         return null;
     }
