@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.backbord</groupId>
   <artifactId>texj</artifactId>
-  <version>1.1.2</version>
+  <version>1.2.0</version>
   <name>${project.groupId}:${project.artifactId}</name>
   <description>TexJ - Use TeX Documents as templates in Java!</description>
   <url>https://github.com/nr23730/texj</url>
@@ -25,8 +25,8 @@
     <url>https://github.com/nr23730/texj</url>
   </scm>
   <properties>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>25</maven.compiler.source>
+    <maven.compiler.target>25</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>6.0.3</junit.version>
     <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
